@@ -25,4 +25,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/shrooq811/skills_utilization:latest
+          tags: ghcr.io/shrooq811/Skills_Utilization:latest

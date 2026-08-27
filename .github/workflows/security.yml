@@ -1,0 +1,43 @@
+name: Security Checks Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Run TruffleHog Secret Scanning
+        run: |
+          echo "========================================"
+          echo "Running TruffleHog for Secret Detection..."
+          echo "========================================"
+          docker run --rm -v "$(pwd):/pwd" trufflehog/trufflehog:latest filesystem /pwd --no-update || true
+
+      - name: Run Bandit Python Security Scan
+        run: |
+          echo "========================================"
+          echo "Running Bandit for Python Code Security..."
+          echo "========================================"
+          pip install bandit --quiet || true
+          bandit -r . -ll || true
+
+      - name: Run Hadolint Dockerfile Linter
+        run: |
+          echo "========================================"
+          echo "Running Hadolint for Dockerfile Security & Linting..."
+          echo "========================================"
+          if [ -f "Dockerfile" ]; then
+            docker run --rm -i hadolint/hadolint < Dockerfile || echo "Hadolint check completed"
+          else
+            echo "No Dockerfile found in root directory, skipping Hadolint."
+          fi

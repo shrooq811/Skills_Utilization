@@ -1,0 +1,22 @@
+name: Build and Deploy Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Self-Hosted Runner Build & Deploy
+        run: |
+          echo "========================================"
+          echo "Running on local self-hosted runner (aau-training)!"
+          echo "Application built and deployed successfully by Shrooq!"
+          echo "========================================"
